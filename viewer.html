@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Video Viewer</title>
+  </head>
+ 
+  
+
+
+  <body>
+    <h1>My Video</h1>
+    <video width="320" height="240" controls>
+      <source src="my_video.mp4" type="video/mp4">
+      <h2>Other Videos</h2>
+      <video src="other_video_1.mp4" width="640" height="360" controls></video>
+      <video src="other_video_2.mp4" width="640" height="360" controls></video>
+      <video src="other_video_3.mp4" width="640" height="360" controls></video>
+      <video src="other_video_4.mp4" width="640" height="360" controls></video>
+      <video src="other_video_5.mp4" width="640" height="360" controls></video>
+    </video>
+    <br>
+    <button id="like-button">Like</button>
+    <img id="like-img" src="C:/Users/Mdneu/OneDrive/Documents/Gameupandrunning/Ai%20T-shirt%20art/heart2.jpg" alt="like" style="display: none">
+    <span id="like-count">0</span>
+    <button id="dislike-button">Dislike</button>
+    <img id="dislike-img" src="dislike.png" alt="dislike" style="display: none">
+    <span id="dislike-count">0</span>
+    <br><br>
+    <h2>Comments</h2>
+    <form id="comment-form">
+      <label for="comment-input">Leave a comment:</label>
+      <br>
+      <textarea id="comment-input"></textarea>
+      <br>
+      <button id="submit-comment">Post</button>
+    </form>
+    <div id="comment-section"></div>
+    <script>
+      let likes = 0;
+      let dislikes = 0;
+      let comments = [];
+
+      // Load likes and dislikes from local storage
+      if (localStorage.getItem("likes")) {
+        likes = parseInt(localStorage.getItem("likes"));
+        document.getElementById("like-count").textContent = likes;
+      }
+      if (localStorage.getItem("dislikes")) {
+        dislikes = parseInt(localStorage.getItem("dislikes"));
+        document.getElementById("dislike-count").textContent = dislikes;
+      }
+
+      // Load comments from local storage
+      if (localStorage.getItem("comments")) {
+        comments = JSON.parse(localStorage.getItem("comments"));
+        for (let i = 0; i < comments.length; i++) {
+          let commentNode = document.createElement("p");
+          let commentTextNode = document.createTextNode(comments[i]);
+          commentNode.appendChild(commentTextNode);
+          document.getElementById("comment-section").appendChild(commentNode);
+        }
+      }
+
+      let likeButton = document.getElementById("like-button");
+      let likeImg = document.getElementById("like-img");
+      let likeCount = document.getElementById("like-count");
+      let dislikeButton = document.getElementById("dislike-button");
+      let dislikeImg = document.getElementById("dislike-img");
+      let dislikeCount = document.getElementById("dislike-count");
+      let submitComment = document.getElementById("submit-comment");
+
+      likeButton.addEventListener("click", function() {
+        if (!likeButton.disabled) {
+          likes++;
+          likeCount.textContent = likes;
+          likeButton.disabled = true;
+          likeImg.style.display = "inline";
+          dislikeButton.disabled = false;
+          dislikeImg.style.display = "none";
+          localStorage.setItem("likes", likes);
+          if (localStorage.getItem("dislikes")) {
+            dislikes = parseInt(localStorage.getItem("dislikes"));
+            localStorage.setItem("dislikes", dislikes - 1);
+            dislikeCount.textContent = dislikes - 1;
+          }
+        }
+      });
+
+      dislikeButton.addEventListener("click", function() {
+        if (!dislikeButton.disabled) {
+          dislikes++;
+          dislikeCount.textContent = dislikes;
+          dislikeButton.disabled = true;
+          dislikeImg.style.display = "inline";
+          likeButton.disabled = false;
+          likeImg.style.display = "none";
+          localStorage.setItem("dislikes", dislikes);
+          if (localStorage.getItem("likes")) {
+            likes = parseInt(localStorage.getItem("likes"));
+            localStorage.setItem("likes", likes - 1);
+            likeCount.textContent = likes - 1;
+          }
+        }
+      });
+
+      submitComment.addEventListener("click", function(event) {
+        event.preventDefault();
+        let commentInput = document.getElementById("comment-input");
+        let commentText = commentInput.value;
+        if (commentText !== "") {
+          comments.push(commentText);
+          let commentNode = document.createElement("p");
+          let commentTextNode = document.createTextNode(commentText);
+          commentNode.appendChild(commentTextNode);
+          document.getElementById("comment-section").appendChild(commentNode);
+          commentInput.value = "";
+          localStorage.setItem("comments", JSON.stringify(comments));
+        }
+      });
+    </script>
+  </body>
+</html>
+
+
+
